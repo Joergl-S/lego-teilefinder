@@ -4,7 +4,7 @@ Private Web-App (PWA) fürs iPad: Auf einem Foto mit 100–300 LEGO-Teilen werde
 gesuchte Teile inklusive Farbe gefunden und im Bild markiert.
 Reines HTML/CSS/JavaScript, kein Build-Schritt, keine eigene Server-Logik.
 
-**Adresse:** `https://<github-name>.github.io/lego-teilefinder/`
+**Adresse:** https://joergl-s.github.io/lego-teilefinder/
 
 ## So funktioniert es
 
