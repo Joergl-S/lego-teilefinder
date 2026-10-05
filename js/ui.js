@@ -25,7 +25,7 @@ import { predictCached, recognizeMany, testConnection } from './recognize.js';
 import { evaluateRegion, passesPrefilter, partMatches, summarize, baseNum } from './match.js';
 import { Viewer, drawBoxes } from './overlay.js';
 
-export const APP_VERSION = '1.0 · 2026-10-05';
+export const APP_VERSION = '1.0.1 · 2026-10-05';
 
 const $ = sel => document.querySelector(sel);
 const $$ = sel => Array.from(document.querySelectorAll(sel));

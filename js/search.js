@@ -26,6 +26,19 @@ const PRINT_TYPES = new Set(['P', 'T']);
 /** Fallback, falls part_relationships fehlt: typische Rebrickable-Suffixe. */
 const PRINT_RE = /(pr|pat|pb|px)\d/i;
 
+/** Kommen die Suchwörter als zusammenhängende Folge von Wortanfängen im Namen vor? */
+function inSequence(tokens, q, lastIdx) {
+  outer: for (let i = 0; i + q.length <= tokens.length; i++) {
+    for (let k = 0; k < q.length; k++) {
+      const t = tokens[i + k], w = q[k];
+      const exact = k < lastIdx && /^\d+$/.test(w);
+      if (exact ? t !== w : !t.startsWith(w)) continue outer;
+    }
+    return true;
+  }
+  return false;
+}
+
 export class PartIndex {
   /**
    * @param {Array} parts         [[part_num, name, cat_id], ...]
@@ -126,16 +139,19 @@ export class PartIndex {
       //    Reine Zahlen müssen exakt passen (außer das zuletzt getippte Wort),
       //    damit „2 x 4“ nicht „2 x 42“ findet.
       if (score < 0 && qTokens.length && e.nameNorm.includes(longest)) {
+        // Jedes Suchwort braucht ein EIGENES Namenswort („1 x 1“ ≠ „1 x 2“)
+        const used = new Uint8Array(e.tokens.length);
         let ok = true;
         for (let i = 0; i < qTokens.length && ok; i++) {
           const q = qTokens[i];
           const exact = i < lastIdx && /^\d+$/.test(q);
-          ok = e.tokens.some(t => (exact ? t === q : t.startsWith(q)));
+          const k = e.tokens.findIndex((t, j) => !used[j] && (exact ? t === q : t.startsWith(q)));
+          if (k < 0) ok = false; else used[k] = 1;
         }
         if (ok) {
           score = 500 - e.tokens.length * 3 - e.name.length / 20;
-          if (e.nameNorm.includes(qNorm)) score += 40;           // Wörter in der richtigen Reihenfolge
-          if (e.nameNorm.startsWith(qNorm)) score += 30;          // Name beginnt mit der Suche
+          if (inSequence(e.tokens, qTokens, lastIdx)) score += 40;   // Wörter in der richtigen Reihenfolge
+          if (e.nameNorm.startsWith(qNorm)) score += 30;              // Name beginnt mit der Suche
           if (e.tokens[0] === qTokens[0]) score += 10;
         }
       }
