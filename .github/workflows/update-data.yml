@@ -4,6 +4,11 @@ name: Teiledaten aktualisieren
 
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/update-data.yml'
+      - 'tools/update-data.sh'
   schedule:
     - cron: '17 3 1 * *'   # monatlich am 1. um 03:17 UTC
 
