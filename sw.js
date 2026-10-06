@@ -10,7 +10,7 @@
  * Bei jeder Änderung an App-Dateien CACHE_VERSION erhöhen!
  */
 
-const CACHE_VERSION = 'lego-tf-1.0.1';
+const CACHE_VERSION = 'lego-tf-1.0.2';
 const SHELL = [
   './',
   'index.html',
